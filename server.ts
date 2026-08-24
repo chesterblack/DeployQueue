@@ -15,8 +15,8 @@ app.prepare().then(() => {
   const io = new Server(httpServer);
 
   io.on("connection", (socket) => {
-    socket.on('chat message', (msg) => {
-      socket.emit('chat message', msg);
+    socket.on('new deploy', (msg) => {
+      socket.emit('new deploy', msg);
     });
   });
 

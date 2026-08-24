@@ -1,18 +1,18 @@
 "use client";
 
 import { socket } from "@/socket";
-import { useEffect, useState } from "react";
+import { Submission } from "@/types";
+import { SubmitEvent, useEffect, useState } from "react";
 
 
 export default function Home() {
   const [isConnected, setIsConnected] = useState(false);
   const [transport, setTransport] = useState("N/A");
-  const [ message, setMessage ] = useState('');
-  const [ received, setReceived ] = useState<string[]>([]);
+  const [ received, setReceived ] = useState<Submission[]>([]);
 
-  socket.on('chat message', (m) => {
-    setReceived( [...received, m] );
-  });
+  const [ title, setTitle ] = useState<string>('');
+  const [ link, setLink ] = useState<string>('');
+  const [ message, setMessage ] = useState<string>('');
 
   useEffect(() => {
     if (socket.connected) {
@@ -42,9 +42,14 @@ export default function Home() {
     };
   }, []);
 
-  function sendMessage() {
-    console.log('Sending message: ', message);
-    socket.emit('chat message', message);
+  socket.on('new deploy', (m) => {
+    setReceived( [...received, m] );
+  });
+
+  function submitForm( event: SubmitEvent<HTMLFormElement> ) {
+    event.preventDefault();
+    const submission: Submission = { title, link, message };
+    socket.emit('new deploy', submission);
   }
 
   return (
@@ -54,11 +59,38 @@ export default function Home() {
       </p>
 
       <div>
-        {received}
+        {received.map( ( submission: Submission ) => (
+          <div key={submission.title}>
+            <h2>{submission.title}</h2>
+            <a href={submission.link}>{submission.link}</a>
+            <p>{submission.message}</p>
+          </div>
+        ))}
       </div>
 
-      <input type="text" value={message} onChange={e => setMessage(e.target.value)} />
-      <button onClick={sendMessage}>send</button>
+      <form onSubmit={submitForm}>
+        <input
+          type="text"
+          name="title"
+          placeholder="title"
+          value={ title }
+          onChange={ e => setTitle( e.target.value ) }
+        />
+        <input
+          type="text"
+          name="link"
+          placeholder="link"
+          value={ link }
+          onChange={ e => setLink( e.target.value ) }
+        />
+        <textarea
+          name="message"
+          placeholder="message"
+          value={ message }
+          onChange={ e => setMessage( e.target.value ) }
+        />
+        <button type="submit">send</button>
+      </form>
     </div>
   );
 }
