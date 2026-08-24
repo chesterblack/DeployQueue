@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { auth } from "./auth";
 import SignIn from "./components/SignIn";
+import LoggedInBar from "./components/LoggedInBar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,7 +14,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
 
   return (
     <html lang="en">
-      <body>{ session ? children : <SignIn /> }</body>
+      <body>
+        <LoggedInBar />
+        { session ? children : <SignIn /> }
+      </body>
     </html>
   );
 }
