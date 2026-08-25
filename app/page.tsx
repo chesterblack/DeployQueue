@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { setupSocketIo } from "./lib";
+import { connectToSocket } from "./lib";
 import NewDeployForm from "./components/NewDeployForm";
 import Queue from "./components/Queue";
 import { SessionProvider } from "next-auth/react"
@@ -10,7 +10,7 @@ import { SessionProvider } from "next-auth/react"
 export default function Home() {
   const [ isConnected, setIsConnected ] = useState<boolean>( false );
 
-  useEffect( () => { setupSocketIo( setIsConnected ) }, [] );
+  useEffect( () => { connectToSocket( setIsConnected ) }, [] );
 
   if ( !isConnected ) {
     return <div>Loading...</div>

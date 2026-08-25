@@ -12,7 +12,7 @@ export default function Queue( {  } ) {
 	const [ queue, setQueue ] = useState<DeployItem[]>( [] );
 	const { data: session } = useSession();
 
-  socket.on( 'new deploy', ( item: DeployItem ) => {
+  socket.on( 'response', ( item: DeployItem ) => {
     setQueue( [ ...queue, item ] );
   } );
 
@@ -20,9 +20,9 @@ export default function Queue( {  } ) {
     <div className="card queue">
       <h2>Queue</h2>
       { !queue.length && <div>Nothing yet!</div> }
-      { queue.map( ( item: DeployItem ) => {
-				return(
-				<div key={ item.title } className="card queue-item">
+      { queue.map( ( item, i ) => {
+				return (
+				<div key={ `${ i }-${ item.pullRequest.number }` } className="card queue-item">
 					<header>
 						{ item.user &&
 							<div className="queue-item__user">
@@ -43,15 +43,15 @@ export default function Queue( {  } ) {
 					</header>
 					<div className="queue-item__inner">
 						{ ( session?.user?.email &&
-							session.user.email === item?.user?.email
+							session.user.id === item?.user?.id
 						) ? <StatusToggle /> : <Status /> }
 						<h2>
-							{ item.title }
+							{ item.pullRequest.title }
 						</h2>
-						<a href={ item.link }>
-							{ item.link }
+						<a href={ item.pullRequest.html_url } target="_blank">
+							{ item.pullRequest.html_url }
 						</a>
-						<p>{ item.message }</p>
+						{/* <p>{ item.message }</p> */}
 					</div>
         </div>
       )} ) }

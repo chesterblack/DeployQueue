@@ -1,7 +1,7 @@
 import { socket } from "@/socket";
 import { Dispatch, SetStateAction } from "react";
 
-export function setupSocketIo(
+export function connectToSocket(
   setIsConnected: Dispatch<SetStateAction<boolean>>
 ) {
   if (socket.connected) {

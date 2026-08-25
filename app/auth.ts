@@ -1,7 +1,12 @@
 import NextAuth from "next-auth"
 import GitHub from "next-auth/providers/github"
 
- 
+declare module "next-auth" {
+	interface Session {
+		accessToken: string
+	}
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
 		GitHub({
@@ -11,8 +16,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 	],
 	callbacks: {
     async session({ session, token, user }) {
-      session.user.id = token.id;
-      session.accessToken = token.accessToken;
+      session.user.id = token.id as string;
+      session.accessToken = token.accessToken as string;
       return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {

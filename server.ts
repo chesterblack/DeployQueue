@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
+import { DeployItem } from "./types";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -14,9 +15,9 @@ app.prepare().then(() => {
 
   const io = new Server(httpServer);
 
-  io.on("connection", (socket) => {
-    socket.on('new deploy', (msg) => {
-      socket.emit('new deploy', msg);
+  io.on( "connection", ( socket ) => {
+    socket.on('deploy', ( message: DeployItem ) => {
+      io.emit( 'response', message );
     });
   });
 
