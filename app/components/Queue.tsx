@@ -2,11 +2,15 @@
 
 import { socket } from "@/socket";
 import { DeployItem } from "@/types";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
+import StatusToggle from "./StatusToggle";
+import Status from "./Status";
 
 export default function Queue( {  } ) {
-  const [ queue, setQueue ] = useState<DeployItem[]>( [] );
+	const [ queue, setQueue ] = useState<DeployItem[]>( [] );
+	const { data: session } = useSession();
 
   socket.on( 'new deploy', ( item: DeployItem ) => {
     setQueue( [ ...queue, item ] );
@@ -16,11 +20,9 @@ export default function Queue( {  } ) {
     <div className="card queue">
       <h2>Queue</h2>
       { !queue.length && <div>Nothing yet!</div> }
-      { queue.map( ( item: DeployItem, i: number ) => (
-        <div key={ item.title } className="card queue-item">
-					{/* <div className="queue-item__position">
-						{ i + 1 }
-					</div> */}
+      { queue.map( ( item: DeployItem ) => {
+				return(
+				<div key={ item.title } className="card queue-item">
 					<header>
 						{ item.user &&
 							<div className="queue-item__user">
@@ -40,6 +42,9 @@ export default function Queue( {  } ) {
 						</div>
 					</header>
 					<div className="queue-item__inner">
+						{ ( session?.user?.email &&
+							session.user.email === item?.user?.email
+						) ? <StatusToggle /> : <Status /> }
 						<h2>
 							{ item.title }
 						</h2>
@@ -49,7 +54,7 @@ export default function Queue( {  } ) {
 						<p>{ item.message }</p>
 					</div>
         </div>
-      ) ) }
+      )} ) }
     </div>
   );
 }

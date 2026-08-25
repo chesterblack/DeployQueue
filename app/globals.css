@@ -50,7 +50,10 @@ a {
 .logged-in-bar {
   color: white;
   background: black;
-  padding: 5px 0;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .logged-in-bar img {
@@ -62,7 +65,7 @@ a {
 }
 
 .logged-in-bar span:not(.github-username) {
-  margin-left: 50px;
+  margin-left: 45px;
 }
 
 main {
@@ -114,7 +117,6 @@ button {
   color: white;
   box-shadow: 0 3px 9px -2px #00000052;
   padding: 5px 10px;
-  font-size: 1.2rem;
   cursor: pointer;
   transition: ease-in-out .2s;
   border: none;
@@ -177,6 +179,7 @@ form label {
   align-items: center;
   justify-content: space-between;
   padding: 5px;
+  padding-right: 10px;
   border-radius: 10px 10px 0 0;
 }
 
@@ -188,4 +191,8 @@ form label {
 
 .queue-item__user img {
   border-radius: 100%;
+}
+
+.sign-in-form {
+  margin: 40px auto;
 }

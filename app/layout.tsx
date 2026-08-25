@@ -3,6 +3,7 @@ import "./globals.css";
 import { auth } from "./auth";
 import SignIn from "./components/SignIn";
 import LoggedInBar from "./components/LoggedInBar";
+import { Octokit } from "@octokit/core";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -12,11 +13,33 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const session = await auth();
 
+  if (session) {
+    const octokit = new Octokit({
+      auth: session.accessToken
+    });
+  
+    const response = await octokit.request('GET /repos/{owner}/{repo}/pulls', {
+      owner: 'chesterblack',
+      repo: 'vessel',
+      headers: {
+        'X-GitHub-Api-Version': '2026-03-10'
+      }
+    })
+
+    const { data: user } = await octokit.request('GET /user', {
+      headers: {
+        'X-GitHub-Api-Version': '2026-03-10'
+      }
+    });
+
+    console.log( 'findme: response: ', response );
+  }
+
   return (
     <html lang="en">
       <body>
         <LoggedInBar />
-        { session ? children : <SignIn /> }
+        { session ? children : <main><SignIn /></main> }
       </body>
     </html>
   );

@@ -57,7 +57,7 @@ export default function NewDeployForm() {
             onChange={ e => setMessage( e.target.value ) }
           />
         </div>
-        <button type="submit">Reserve a spot</button>
+        <button type="submit">Join the queue</button>
       </form>
     </div>
   );
